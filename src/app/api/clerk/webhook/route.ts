@@ -1,8 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-
-export default async function POST(req: NextRequest) {
+export default async function POST(req: Request) {
   const { data } = await req.json();
   console.log(data);
 
-  return NextResponse.json({ message: "Webhook received" }, { status: 200 });
+  return new Response("Webhook received", { status: 200 });
 }
