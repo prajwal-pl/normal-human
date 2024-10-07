@@ -1,4 +1,4 @@
-export default async function POST(req: Request) {
+export async function POST(req: Request) {
   const { data } = await req.json();
   console.log(data);
 
