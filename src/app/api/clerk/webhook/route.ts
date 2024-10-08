@@ -7,6 +7,7 @@ export const POST = async (req: Request) => {
   const lastName = data.last_name;
   const imageUrl = data.image_url;
   const id = data.id;
+  console.log(data);
 
   await db.user.upsert({
     where: { id },
