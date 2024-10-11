@@ -128,4 +128,38 @@ export const mailRouter = createTRPCRouter({
       });
       return threads;
     }),
+
+  getThreadById: privateProcedure
+    .input(
+      z.object({
+        accountId: z.string(),
+        threadId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const account = await authoriseAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+      return await ctx.db.thread.findUnique({
+        where: { id: input.threadId },
+        include: {
+          emails: {
+            orderBy: {
+              sentAt: "asc",
+            },
+            select: {
+              from: true,
+              body: true,
+              subject: true,
+              bodySnippet: true,
+              emailLabel: true,
+              sysLabels: true,
+              id: true,
+              sentAt: true,
+            },
+          },
+        },
+      });
+    }),
 });
