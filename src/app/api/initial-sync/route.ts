@@ -1,7 +1,6 @@
 import { Account } from "~/lib/account";
 import { syncEmailsToDatabase } from "~/lib/sync-to-db";
 import { db } from "~/server/db";
-import { auth } from "@clerk/nextjs/server";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 300;
