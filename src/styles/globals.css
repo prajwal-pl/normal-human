@@ -76,3 +76,13 @@
 ::-webkit-scrollbar-thumb {
   @apply bg-card-foreground dark:bg-foreground;
 }
+
+.tiptap.ProseMirror {
+  outline: none;
+}
+
+.is-active {
+  background-color: #dadada;
+  border-radius: 4px;
+  padding: 0px 2px;
+}

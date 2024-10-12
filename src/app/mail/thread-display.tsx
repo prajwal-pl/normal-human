@@ -46,6 +46,7 @@ import { useAtom } from "jotai";
 import { useLocalStorage } from "usehooks-ts";
 import SearchDisplay from "./components/search-display";
 import EmailDisplay from "./components/email-display";
+import ReplyBox from "./components/reply-box";
 // import ReplyBox from "./reply-box";
 
 export function ThreadDisplay() {
@@ -249,8 +250,7 @@ export function ThreadDisplay() {
               </div>
               <div className="flex-1"></div>
               <Separator className="mt-auto" />
-              {/* <ReplyBox /> */}
-              ReplyBox
+              <ReplyBox />
             </div>
           ) : (
             <>
