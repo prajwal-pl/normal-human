@@ -28,7 +28,7 @@ const ComposeButton = () => {
     { label: string; value: string }[]
   >([]);
   const [subject, setSubject] = React.useState<string>("");
-  // const { data: account } = api.mail.getMyAccount.useQuery({ accountId })
+  const { data: account } = api.mail.getMyAccount.useQuery({ accountId });
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -54,29 +54,38 @@ const ComposeButton = () => {
   const sendEmail = api.mail.sendEmail.useMutation();
 
   const handleSend = async (value: string) => {
-    // console.log(account)
-    // console.log({ value })
-    // if (!account) return
-    // sendEmail.mutate({
-    //     accountId,
-    //     threadId: undefined,
-    //     body: value,
-    //     subject,
-    //     from: { name: account?.name ?? 'Me', address: account?.emailAddress ?? 'me~example.com' },
-    //     to: toValues.map(to => ({ name: to.value, address: to.value })),
-    //     cc: ccValues.map(cc => ({ name: cc.value, address: cc.value })),
-    //     replyTo: { name: account?.name ?? 'Me', address: account?.emailAddress ?? 'me~example.com' },
-    //     inReplyTo: undefined,
-    // }, {
-    //     onSuccess: () => {
-    //         toast.success("Email sent")
-    //         setOpen(false)
-    //     },
-    //     onError: (error) => {
-    //         console.log(error)
-    //         toast.error(error.message)
-    //     }
-    // })
+    console.log(account);
+    console.log({ value });
+    if (!account) return;
+    sendEmail.mutate(
+      {
+        accountId,
+        threadId: undefined,
+        body: value,
+        subject,
+        from: {
+          name: account?.name ?? "Me",
+          address: account?.emailAddress ?? "me~example.com",
+        },
+        to: toValues.map((to) => ({ name: to.value, address: to.value })),
+        cc: ccValues.map((cc) => ({ name: cc.value, address: cc.value })),
+        replyTo: {
+          name: account?.name ?? "Me",
+          address: account?.emailAddress ?? "me~example.com",
+        },
+        inReplyTo: undefined,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Email sent");
+          setOpen(false);
+        },
+        onError: (error) => {
+          console.log(error);
+          toast.error(error.message);
+        },
+      },
+    );
   };
 
   return (

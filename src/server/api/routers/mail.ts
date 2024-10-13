@@ -90,6 +90,8 @@ export const mailRouter = createTRPCRouter({
         input.accountId,
         ctx.auth.userId,
       );
+      const acc = new Account(account.token);
+      await acc.syncEmails();
 
       let filter: Prisma.ThreadWhereInput = {};
       if (input.tab === "inbox") {
@@ -123,7 +125,7 @@ export const mailRouter = createTRPCRouter({
             },
           },
         },
-        take: 15,
+        take: 50,
         orderBy: {
           lastMessageDate: "desc",
         },
@@ -271,6 +273,20 @@ export const mailRouter = createTRPCRouter({
           id: lastExternalEmail.internetMessageId,
         };
       }
+    }),
+
+  getMyAccount: privateProcedure
+    .input(
+      z.object({
+        accountId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const account = await authoriseAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+      return account;
     }),
 
   sendEmail: privateProcedure

@@ -34,7 +34,7 @@ const EmailDisplay = ({ email }: Props) => {
       className={cn(
         "cursor-pointer rounded-md border p-4 transition-all hover:translate-x-2",
         {
-          "border-l-4 border-l-gray-900": isMe,
+          "border-l-4 border-l-gray-900 dark:border-l-white": isMe,
         },
       )}
       ref={letterRef}

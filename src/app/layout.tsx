@@ -7,6 +7,8 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/theme-provider";
 import KBar from "./mail/components/kbar";
+// import { Toaster } from "~/components/ui/toaster";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Normal Human",
@@ -34,6 +36,7 @@ export default function RootLayout({
             <TRPCReactProvider>
               <KBar>{children}</KBar>
             </TRPCReactProvider>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

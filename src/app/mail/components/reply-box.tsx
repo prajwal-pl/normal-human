@@ -93,7 +93,7 @@ const Component = ({
       {
         onSuccess: () => {
           toast.success("Email sent");
-          // editor?.commands.clearContent()
+          //   editor?.commands.clearContent()
         },
       },
     );

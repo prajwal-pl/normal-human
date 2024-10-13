@@ -23,7 +23,7 @@ const TagInput: React.FC<TagInputProps> = ({
 
   const options = suggestions.map((suggestion) => ({
     label: (
-      <span className="flex items-center gap-2">
+      <span className="flex items-center gap-2 dark:text-zinc-800">
         <Avatar name={suggestion} size="25" textSizeRatio={2} round={true} />
         {suggestion}
       </span>
@@ -48,7 +48,7 @@ const TagInput: React.FC<TagInputProps> = ({
           input
             ? options.concat({
                 label: (
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 dark:!text-white">
                     <Avatar
                       name={input}
                       size="25"
@@ -67,10 +67,10 @@ const TagInput: React.FC<TagInputProps> = ({
             return "!border-none !outline-none !ring-0 !shadow-none focus:border-none focus:outline-none focus:ring-0 focus:shadow-none dark:bg-transparent";
           },
           multiValue: () => {
-            return "dark:!bg-gray-700";
+            return "dark:!bg-zinc-800";
           },
           multiValueLabel: () => {
-            return "dark:text-white dark:bg-gray-700 rounded-md";
+            return "dark:!text-white dark:!bg-gray-700 rounded-md";
           },
         }}
         classNamePrefix="select"

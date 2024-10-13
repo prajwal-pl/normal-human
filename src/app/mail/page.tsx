@@ -12,8 +12,8 @@ import ComposeButton from "./components/compose-button";
 const Page = () => {
   return (
     <>
-      <div className="absolute bottom-4 left-0">
-        <div className="mr-2 flex items-center gap-2">
+      <div className="absolute bottom-4 left-4">
+        <div className="z-10 mr-2 flex items-center gap-2">
           <UserButton />
           <ModeToggle />
           <ComposeButton />
