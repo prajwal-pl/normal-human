@@ -6,9 +6,6 @@ import { StarterKit } from "@tiptap/starter-kit";
 import TipTapMenuBar from "./menu-bar";
 import Text from "@tiptap/extension-text";
 import { Button } from "~/components/ui/button";
-
-// import { generate } from "./action";
-// import { readStreamableValue } from 'ai/rsc';
 import { Separator } from "~/components/ui/separator";
 import { useThread } from "../../use-thread";
 import useThreads from "../../use-threads";
@@ -19,6 +16,8 @@ import TagInput from "./tag-input";
 import { useLocalStorage } from "usehooks-ts";
 import { Bot } from "lucide-react";
 import AIComposeButton from "./ai-compose-button";
+import { generate } from "./actions";
+import { readStreamableValue } from "ai/rsc";
 
 type EmailEditorProps = {
   toValues: { label: string; value: string }[];
@@ -59,22 +58,21 @@ const EmailEditor = ({
 
   const [generation, setGeneration] = React.useState("");
 
-  // const aiGenerate = async (prompt: string) => {
-  //     const { output } = await generate(prompt)
+  const aiGenerate = async (prompt: string) => {
+    const { output } = await generate(prompt);
 
-  //     for await (const delta of readStreamableValue(output)) {
-  //         if (delta) {
-  //             setGeneration(delta);
-  //         }
-  //     }
-
-  // }
+    for await (const delta of readStreamableValue(output)) {
+      if (delta) {
+        setGeneration(delta);
+      }
+    }
+  };
 
   const customText = Text.extend({
     addKeyboardShortcuts() {
       return {
-        "Meta-j": () => {
-          // aiGenerate(this.editor.getText());
+        "Alt-j": () => {
+          aiGenerate(this.editor.getText());
           return true;
         },
       };
@@ -185,7 +183,7 @@ const EmailEditor = ({
         <span className="text-sm">
           Tip: Press{" "}
           <kbd className="rounded-lg border border-gray-200 bg-gray-100 px-2 py-1.5 text-xs font-semibold text-gray-800">
-            Cmd + J
+            Alt + J
           </kbd>{" "}
           for AI autocomplete
         </span>

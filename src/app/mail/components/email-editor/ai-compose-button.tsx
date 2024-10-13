@@ -1,5 +1,4 @@
 "use client";
-// import TurndownService from 'turndown'
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -11,14 +10,15 @@ import {
 } from "~/components/ui/dialog";
 
 import React from "react";
-// import { generateEmail } from "./action"
-// import { readStreamableValue } from "ai/rsc"
+
 import { Bot } from "lucide-react";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import useThreads from "../../use-threads";
 import { useThread } from "../../use-thread";
-// import { turndown } from '~/lib/turndown'
+import { generateEmail } from "./actions";
+import { readStreamableValue } from "ai/rsc";
+import { turndown } from "~/lib/turndown";
 
 type Props = {
   onGenerate: (value: string) => void;
@@ -31,21 +31,28 @@ const AIComposeButton = (props: Props) => {
   const { account, threads } = useThreads();
   const [threadId] = useThread();
   const thread = threads?.find((t) => t.id === threadId);
-  // const aiGenerate = async (prompt: string) => {
-  //     let context: string | undefined = ''
-  //     if (!props.isComposing) {
-  //         context = thread?.emails.map(m => `Subject: ${m.subject}\nFrom: ${m.from.address}\n\n${turndown.turndown(m.body ?? m.bodySnippet ?? '')}`).join('\n')
-  //     }
+  const aiGenerate = async (prompt: string) => {
+    let context: string | undefined = "";
+    if (!props.isComposing) {
+      context = thread?.emails
+        .map(
+          (m) =>
+            `Subject: ${m.subject}\nFrom: ${m.from.address}\n\n${turndown.turndown(m.body ?? m.bodySnippet ?? "")}`,
+        )
+        .join("\n");
+    }
 
-  //     const { output } = await generateEmail(context + `\n\nMy name is: ${account?.name}`, prompt)
+    const { output } = await generateEmail(
+      context + `\n\nMy name is: ${account?.name}`,
+      prompt,
+    );
 
-  //     for await (const delta of readStreamableValue(output)) {
-  //         if (delta) {
-  //             props.onGenerate(delta);
-  //         }
-  //     }
-
-  // }
+    for await (const delta of readStreamableValue(output)) {
+      if (delta) {
+        props.onGenerate(delta);
+      }
+    }
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
@@ -69,7 +76,9 @@ const AIComposeButton = (props: Props) => {
           <div className="h-2"></div>
           <Button
             onClick={() => {
-              // aiGenerate(prompt); setOpen(false); setPrompt('')
+              aiGenerate(prompt);
+              setOpen(false);
+              setPrompt("");
             }}
           >
             Generate
