@@ -17,6 +17,7 @@ import useThreads from "./use-threads";
 
 import { format } from "date-fns";
 import { useThread } from "./use-thread";
+import { Loader2 } from "lucide-react";
 
 export function ThreadList() {
   const { threads, isFetching } = useThreads();

@@ -16,9 +16,9 @@ import { ThreadDisplay } from "./thread-display";
 import { ThreadList } from "./thread-list";
 import { useLocalStorage } from "usehooks-ts";
 import SideBar from "./sidebar";
-import SearchBar from "./search-bar";
 import { useAtom } from "jotai";
 import AskAI from "./ask-ai";
+import SearchBar from "./components/search-bar";
 
 interface MailProps {
   defaultLayout: number[] | undefined;

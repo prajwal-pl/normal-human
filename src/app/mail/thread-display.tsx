@@ -44,9 +44,12 @@ import { useAtom } from "jotai";
 // import { isSearchingAtom, searchValueAtom } from "./search-bar";
 // import SearchDisplay from "./search-display";
 import { useLocalStorage } from "usehooks-ts";
-import SearchDisplay from "./components/search-display";
+// import SearchDisplay from "./components/search-display";
 import EmailDisplay from "./components/email-display";
 import ReplyBox from "./components/reply-box";
+import { isSearchingAtom } from "./components/search-bar";
+import SearchDisplay from "./components/search-display";
+// import { isSearchingAtom } from "./search-bar";
 // import ReplyBox from "./reply-box";
 
 export function ThreadDisplay() {
@@ -54,8 +57,7 @@ export function ThreadDisplay() {
   const { threads, isFetching } = useThreads();
   const today = new Date();
   const _thread = threads?.find((t) => t.id === threadId);
-  // const [isSearching, setIsSearching] = useAtom(isSearchingAtom)
-  const isSearching = false;
+  const [isSearching, setIsSearching] = useAtom(isSearchingAtom);
   const [accountId] = useLocalStorage("accountId", "");
   const { data: foundThread } = api.mail.getThreadById.useQuery(
     {

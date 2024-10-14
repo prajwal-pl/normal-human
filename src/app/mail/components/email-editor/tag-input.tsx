@@ -64,10 +64,10 @@ const TagInput: React.FC<TagInputProps> = ({
         }
         classNames={{
           control: () => {
-            return "!border-none !outline-none !ring-0 !shadow-none focus:border-none focus:outline-none focus:ring-0 focus:shadow-none dark:bg-transparent";
+            return "!border-none !outline-none !ring-0 !shadow-none focus:border-none focus:outline-none focus:ring-0 focus:shadow-none dark:bg-transparent ";
           },
           multiValue: () => {
-            return "dark:!bg-zinc-800";
+            return "dark:!bg-zinc-800 dark:!text-white";
           },
           multiValueLabel: () => {
             return "dark:!text-white dark:!bg-gray-700 rounded-md";
