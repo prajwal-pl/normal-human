@@ -20,7 +20,7 @@ const Page = () => {
         </div>
       </div>
       <Mail
-        defaultLayout={[20, 32, 48]}
+        defaultLayout={[25, 32, 48]}
         navCollapsedSize={4}
         defaultCollapsed={false}
       />

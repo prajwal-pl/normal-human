@@ -12,6 +12,7 @@ import { OramaManager } from "./orama";
 // import { getEmbeddings } from './embeddings';
 import { turndown } from "./turndown";
 import { waitUntil } from "@vercel/functions";
+import { createEmbeddings } from "./embedding";
 
 async function syncEmailsToDatabase(emails: EmailMessage[], accountId: string) {
   console.log(`Syncing ${emails.length} emails to database`);
@@ -33,6 +34,7 @@ async function syncEmailsToDatabase(emails: EmailMessage[], accountId: string) {
               );
               const payload = `From: ${email.from.name} <${email.from.address}>\nTo: ${email.to.map((t) => `${t.name} <${t.address}>`).join(", ")}\nSubject: ${email.subject}\nBody: ${body}\n SentAt: ${new Date(email.sentAt).toLocaleString()}`;
               // const bodyEmbedding = await getEmbeddings(payload);
+              const embeddings = await createEmbeddings(body);
               await oramaClient.insert({
                 title: email.subject,
                 body: body,

@@ -8,6 +8,7 @@ import {
 } from "@orama/orama";
 import { persist, restore } from "@orama/plugin-data-persistence";
 import { db } from "~/server/db";
+import { createEmbeddings } from "./embedding";
 // import { getEmbeddings } from "@/lib/embeddings";
 
 export class OramaManager {
@@ -50,7 +51,7 @@ export class OramaManager {
             from: "string",
             to: "string[]",
             sentAt: "string",
-            //   embeddings: "vector[1536]",
+            embeddings: "vector[768]",
             threadId: "string",
           },
         });
@@ -68,25 +69,31 @@ export class OramaManager {
     await this.saveIndex();
   }
 
-  // async vectorSearch({ prompt, numResults = 10 }: { prompt: string, numResults?: number }) {
-  //     const embeddings = await getEmbeddings(prompt)
-  //     const results = await search(this.orama, {
-  //         mode: 'hybrid',
-  //         term: prompt,
-  //         vector: {
-  //             value: embeddings,
-  //             property: 'embeddings'
-  //         },
-  //         similarity: 0.80,
-  //         limit: numResults,
-  //         // hybridWeights: {
-  //         //     text: 0.8,
-  //         //     vector: 0.2,
-  //         // }
-  //     })
-  //     // console.log(results.hits.map(hit => hit.document))
-  //     return results
-  // }
+  async vectorSearch({
+    prompt,
+    numResults = 10,
+  }: {
+    prompt: string;
+    numResults?: number;
+  }) {
+    const embeddings = await createEmbeddings(prompt);
+    const results = await search(this.orama, {
+      mode: "hybrid",
+      term: prompt,
+      vector: {
+        value: embeddings,
+        property: "embeddings",
+      },
+      similarity: 0.8,
+      limit: numResults,
+      // hybridWeights: {
+      //     text: 0.8,
+      //     vector: 0.2,
+      // }
+    });
+    // console.log(results.hits.map(hit => hit.document))
+    return results;
+  }
   async search({ term }: { term: string }) {
     try {
       const results = await search(this.orama, { term });
