@@ -13,7 +13,7 @@ import { Toaster } from "sonner";
 export const metadata: Metadata = {
   title: "Normal Human",
   description: "An AI based email management service",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/logo.png" }],
 };
 
 export default function RootLayout({

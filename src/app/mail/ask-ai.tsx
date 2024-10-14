@@ -8,8 +8,8 @@ import { Send, SparklesIcon } from "lucide-react";
 import { useLocalStorage } from "usehooks-ts";
 import { cn } from "~/lib/utils";
 // import StripeButton from './stripe-button';
-// import PremiumBanner from './premium-banner';
 import { toast } from "sonner";
+import PremiumBanner from "./components/premium-banner";
 
 const transitionDebug = {
   type: "easeOut",
@@ -44,7 +44,7 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
   if (isCollapsed) return null;
   return (
     <div className="mb-14 p-4">
-      {/* <PremiumBanner /> */}
+      <PremiumBanner />
       <div className="h-4"></div>
       <motion.div className="flex flex-1 flex-col items-end justify-end rounded-lg border bg-gray-100 p-4 pb-4 shadow-inner dark:bg-zinc-900">
         <div

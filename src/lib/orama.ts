@@ -30,10 +30,7 @@ export class OramaManager {
       if (!account) throw new Error("Account not found");
 
       if (account.binaryIndex) {
-        console.log(
-          "Restoring Orama instance from binary index:",
-          account.binaryIndex,
-        );
+        console.log("Restoring Orama instance from binary index:");
         try {
           this.orama = await restore("json", account.binaryIndex as any);
           console.log("Orama instance restored successfully");
