@@ -55,5 +55,5 @@ export const GET = async (req: NextRequest) => {
       }),
   );
 
-  return NextResponse.redirect(new URL("/", req.url));
+  return NextResponse.redirect(new URL("/mail", req.url));
 };

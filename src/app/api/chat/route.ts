@@ -42,7 +42,7 @@ export const POST = async (req: Request) => {
     };
 
     const model = await genAI.getGenerativeModel({
-      model: "gemini-1.5-pro-latest",
+      model: "gemini-1.5-flash",
     });
 
     // const parts: (string | Part)[] = [
@@ -52,27 +52,37 @@ export const POST = async (req: Request) => {
     //   },
     // ];
 
-    interface Content {
-      role: string;
-      content: string;
-      parts: Part[];
-    }
+    // interface Content {
+    //   role: string;
+    //   content: string;
+    //   parts: Part[];
+    // }
 
-    const streamMessages: Content[] = [
-      {
-        role: "system",
-        parts: [prompt.content],
-      },
-      ...messages
-        .filter((message: Message) => message.role === "user")
-        .map((message: Message) => ({
-          role: message.role,
-          parts: [message.content],
-        })),
-    ];
+    // const streamMessages: Content[] = [
+    //   {
+    //     role: "system",
+    //     parts: [prompt.content],
+    //   },
+    //   ...messages
+    //     .filter((message: Message) => message.role === "user")
+    //     .map((message: Message) => ({
+    //       role: message.role,
+    //       parts: [message.content],
+    //     })),
+    // ];
 
     const response = await model.generateContent({
-      contents: streamMessages,
+      systemInstruction: prompt.content,
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: lastMessage.content,
+            },
+          ],
+        },
+      ],
     });
     // const stream = GoogleGenerativeAIStream(response, {
     //   onStart: () => {
@@ -82,7 +92,10 @@ export const POST = async (req: Request) => {
     //     console.log("Completed");
     //   },
     // });
-    console.log(response);
+    console.log(
+      //@ts-ignore
+      response.response.candidates[0]?.content?.parts[0]?.text,
+    );
     // return new StreamingTextResponse(stream);
     return new Response("OK", { status: 200 });
   } catch (error) {

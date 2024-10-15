@@ -83,10 +83,10 @@ export class OramaManager {
       },
       similarity: 0.8,
       limit: numResults,
-      // hybridWeights: {
-      //     text: 0.8,
-      //     vector: 0.2,
-      // }
+      hybridWeights: {
+        text: 0.8,
+        vector: 0.2,
+      },
     });
     // console.log(results.hits.map(hit => hit.document))
     return results;
