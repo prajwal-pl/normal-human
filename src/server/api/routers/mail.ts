@@ -10,7 +10,7 @@ export const authoriseAccountAccess = async (
   accountId: string,
   userId: string,
 ) => {
-  console.log(accountId, userId);
+  // console.log(accountId, userId);
   const account = await db.account.findFirst({
     where: {
       id: accountId,
@@ -23,7 +23,7 @@ export const authoriseAccountAccess = async (
       token: true,
     },
   });
-  console.log(account);
+  // console.log(account);
   if (!account) throw new Error("Invalid token");
   return account;
 };
@@ -68,6 +68,8 @@ export const mailRouter = createTRPCRouter({
         input.accountId,
         ctx.auth.userId,
       );
+
+      if (!account) throw new Error("No account");
       let filter: Prisma.ThreadWhereInput = {};
       if (input.tab === "inbox") {
         filter = inboxFilter(account.id);

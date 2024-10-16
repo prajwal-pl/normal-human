@@ -84,20 +84,24 @@ export const POST = async (req: Request) => {
         },
       ],
     });
-    // const stream = GoogleGenerativeAIStream(response, {
-    //   onStart: () => {
-    //     console.log("started");
+    // const stream = GoogleGenerativeAIStream(
+    //   //@ts-ignore
+    //   (await response.response)?.candidates?.[0]?.content.parts[0]?.text,
+    //   {
+    //     onStart: () => {
+    //       console.log("started");
+    //     },
+    //     onCompletion: () => {
+    //       console.log("Completed");
+    //     },
     //   },
-    //   onCompletion: () => {
-    //     console.log("Completed");
-    //   },
-    // });
-    console.log(
-      //@ts-ignore
-      response.response.candidates[0]?.content?.parts[0]?.text,
-    );
-    // return new StreamingTextResponse(stream);
-    return new Response("OK", { status: 200 });
+    // );
+    const candidateText =
+      response?.response?.candidates?.[0]?.content?.parts[0]?.text ??
+      "No response";
+    console.log(candidateText);
+
+    return new Response(candidateText, { status: 200 });
   } catch (error) {
     console.log(error);
     return new Response("Error", { status: 500 });

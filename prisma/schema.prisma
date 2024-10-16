@@ -18,7 +18,7 @@ model User {
     imageUrl     String?
 
     stripeSubscriptionId String?             @unique
-    stripeSubscription   StripeSubscription? @relation(fields: [stripeSubscriptionId], references: [id])
+    stripeSubscription   StripeSubscription? @relation(fields: [stripeSubscriptionId], references: [id], onDelete: Cascade)
 
     role Role @default(user)
 
@@ -39,7 +39,7 @@ model ChatbotInteraction {
     count Int    @default(1)
 
     userId String? @unique
-    user   User?   @relation(fields: [userId], references: [id])
+    user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([day, userId])
     @@index([day, userId])
@@ -74,7 +74,7 @@ model Account {
 
     nextDeltaToken String?
 
-    user           User           @relation(fields: [userId], references: [id])
+    user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
     threads        Thread[]
     emailAddresses EmailAddress[]
 }
@@ -87,7 +87,7 @@ model Thread {
     lastMessageDate DateTime
     participantIds  String[]
     accountId       String
-    account         Account  @relation(fields: [accountId], references: [id])
+    account         Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
     done Boolean @default(false)
 
@@ -120,7 +120,7 @@ model Email {
     sysClassifications   String[]
     sensitivity          Sensitivity           @default(normal)
     meetingMessageMethod MeetingMessageMethod?
-    from                 EmailAddress          @relation("FromEmail", fields: [fromId], references: [id])
+    from                 EmailAddress          @relation("FromEmail", fields: [fromId], references: [id], onDelete: Cascade)
     fromId               String
     to                   EmailAddress[]        @relation("ToEmails")
     cc                   EmailAddress[]        @relation("CcEmails")
@@ -163,7 +163,7 @@ model EmailAddress {
     replyToEmails Email[] @relation("ReplyToEmails")
 
     accountId String
-    account   Account @relation(fields: [accountId], references: [id])
+    account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
     @@unique([accountId, address])
 }
@@ -177,7 +177,7 @@ model EmailAttachment {
     contentId       String?
     content         String?
     contentLocation String?
-    Email           Email   @relation(fields: [emailId], references: [id])
+    Email           Email   @relation(fields: [emailId], references: [id], onDelete: Cascade)
     emailId         String
 }
 

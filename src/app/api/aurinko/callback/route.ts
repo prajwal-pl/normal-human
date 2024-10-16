@@ -25,11 +25,13 @@ export const GET = async (req: NextRequest) => {
       { error: "Failed to fetch token" },
       { status: 400 },
     );
+  const accountId = token.accountId.toString();
+  console.log(accountId);
   const accountDetails = await getAccountDetails(token.accessToken);
   await db.account.upsert({
     where: { id: token.accountId.toString() },
     create: {
-      id: token.accountId.toString(),
+      id: accountId,
       userId,
       token: token.accessToken,
       provider: "Aurinko",
@@ -46,9 +48,6 @@ export const GET = async (req: NextRequest) => {
       .post(`${process.env.NEXT_PUBLIC_URL}/api/initial-sync`, {
         accountId: token.accountId.toString(),
         userId,
-      })
-      .then((res) => {
-        console.log(res.data);
       })
       .catch((err) => {
         console.log(err.response.data);

@@ -31,15 +31,17 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
     },
     initialMessages: [],
   });
-  React.useEffect(() => {
-    const messageContainer = document.getElementById("message-container");
-    if (messageContainer) {
-      messageContainer.scrollTo({
-        top: messageContainer.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [messages]);
+
+  console.log(messages);
+  // React.useEffect(() => {
+  //   const messageContainer = document.getElementById("message-container");
+  //   if (messageContainer) {
+  //     messageContainer.scrollTo({
+  //       top: messageContainer.scrollHeight,
+  //       behavior: "smooth",
+  //     });
+  //   }
+  // }, [messages]);
 
   if (isCollapsed) return null;
   return (
@@ -134,7 +136,13 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
               </div>
             </div>
           )}
-          <form onSubmit={handleSubmit} className="flex w-full">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+            className="flex w-full"
+          >
             <input
               type="text"
               onChange={handleInputChange}
