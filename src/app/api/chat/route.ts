@@ -53,8 +53,11 @@ export const POST = async (req: Request) => {
       model: "gemini-1.5-flash",
     });
 
+    const data = new StreamData();
+
     const result = await streamText({
       model: google("gemini-1.5-flash"),
+      system: "Hi I'm Normal Human AI",
       messages: [
         {
           role: "system",
@@ -62,9 +65,14 @@ export const POST = async (req: Request) => {
         },
         {
           role: "user",
-          content: lastMessage.content,
+          content: [
+            ...messages.map((message: Message) => message.content),
+          ].join("\n"),
         },
       ],
+      onFinish: () => {
+        data.close();
+      },
     });
 
     // example: use textStream as an async iterable
@@ -72,7 +80,6 @@ export const POST = async (req: Request) => {
       console.log(textPart);
     }
 
-    const data = new StreamData();
     console.log(data);
     return result.toDataStreamResponse({ data });
   } catch (error) {

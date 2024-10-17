@@ -1,8 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
 import React from "react";
+import { FREE_CREDITS_PER_DAY } from "~/app/constants";
 // import StripeButton from './stripe-button'
 import { api } from "~/trpc/react";
+import StripeButton from "./stripe-button";
 // import { FREE_CREDITS_PER_DAY } from '@/app/constants'
 // import { getSubscriptionStatus } from '@/lib/stripe-actions'
 
@@ -35,7 +37,7 @@ const PremiumBanner = () => {
             Ask as many questions as you want
           </p>
           <div className="h-4"></div>
-          {/* <StripeButton /> */}
+          <StripeButton />
         </div>
       </motion.div>
     );
@@ -53,7 +55,7 @@ const PremiumBanner = () => {
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-semibold text-white">Basic Plan</h1>
           <p className="text-sm text-gray-400 md:max-w-[calc(100%-0px)]">
-            {} / {} messages remaining
+            {} / {FREE_CREDITS_PER_DAY} messages remaining
           </p>
         </div>
         <div className="h-4"></div>
@@ -61,7 +63,7 @@ const PremiumBanner = () => {
           Upgrade to pro to ask as many questions as you want
         </p>
         <div className="h-4"></div>
-        {/* <StripeButton /> */}
+        <StripeButton />
       </div>
     </motion.div>
   );
