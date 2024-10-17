@@ -17,8 +17,10 @@ import { ThreadList } from "./thread-list";
 import { useLocalStorage } from "usehooks-ts";
 import SideBar from "./sidebar";
 import { useAtom } from "jotai";
+
 import AskAI from "./ask-ai";
 import SearchBar from "./components/search-bar";
+import dynamic from "next/dynamic";
 
 interface MailProps {
   defaultLayout: number[] | undefined;
@@ -26,23 +28,24 @@ interface MailProps {
   navCollapsedSize: number;
 }
 
-export function Mail({
+const Mail = ({
   defaultLayout = [20, 32, 48],
   defaultCollapsed = false,
   navCollapsedSize,
-}: MailProps) {
+}: MailProps) => {
   const [done, setDone] = useLocalStorage("normalhuman-done", false);
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
+  const [sizes, setSizes] = React.useState([20, 32, 48]);
+
+  React.useEffect(() => {
+    document.cookie = `react-resizable-panels:layout:mail=${JSON.stringify(sizes)}`;
+  }, [sizes]);
 
   return (
     <TooltipProvider delayDuration={0}>
       <ResizablePanelGroup
         direction="horizontal"
-        onLayout={(sizes: number[]) => {
-          document.cookie = `react-resizable-panels:layout:mail=${JSON.stringify(
-            sizes,
-          )}`;
-        }}
+        onLayout={(newSizes: number[]) => setSizes(newSizes)}
         className="h-full min-h-screen items-stretch"
       >
         <ResizablePanel
@@ -130,4 +133,6 @@ export function Mail({
       </ResizablePanelGroup>
     </TooltipProvider>
   );
-}
+};
+
+export default dynamic(() => Promise.resolve(Mail), { ssr: false });

@@ -32,16 +32,15 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
     initialMessages: [],
   });
 
-  console.log(messages);
-  // React.useEffect(() => {
-  //   const messageContainer = document.getElementById("message-container");
-  //   if (messageContainer) {
-  //     messageContainer.scrollTo({
-  //       top: messageContainer.scrollHeight,
-  //       behavior: "smooth",
-  //     });
-  //   }
-  // }, [messages]);
+  React.useEffect(() => {
+    const messageContainer = document.getElementById("message-container");
+    if (messageContainer) {
+      messageContainer.scrollTo({
+        top: messageContainer.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
 
   if (isCollapsed) return null;
   return (
@@ -50,7 +49,7 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
       <div className="h-4"></div>
       <motion.div className="flex flex-1 flex-col items-end justify-end rounded-lg border bg-gray-100 p-4 pb-4 shadow-inner dark:bg-zinc-900">
         <div
-          className="flex max-h-[50vh] w-full flex-col gap-2 overflow-y-scroll"
+          className="flex max-h-[35vh] w-full flex-col gap-2 overflow-y-scroll"
           id="message-container"
         >
           <AnimatePresence mode="wait">
@@ -59,15 +58,15 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
                 key={message.id}
                 layout="position"
                 className={cn(
-                  "z-10 mt-2 max-w-[250px] break-words rounded-2xl bg-gray-200 dark:bg-zinc-800",
+                  "mt-2 max-w-[250px] break-words rounded-2xl bg-gray-200 dark:bg-zinc-800",
                   {
                     "self-end text-zinc-900 dark:text-gray-100":
                       message.role === "user",
-                    "self-start bg-blue-500 text-white":
-                      message.role === "assistant",
+                    "self-start bg-blue-500 text-white dark:bg-blue-500":
+                      message.role === "assistant" || message.role === "system",
                   },
                 )}
-                layoutId={`container-[${messages.length - 1}]`}
+                layoutId={`container-${message.id}`}
                 transition={transitionDebug}
               >
                 <div className="px-3 py-2 text-[15px] leading-[15px]">
@@ -147,7 +146,7 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
               type="text"
               onChange={handleInputChange}
               value={input}
-              className="py- relative h-9 flex-grow rounded-full border border-gray-200 bg-white px-3 text-[15px] outline-none placeholder:text-[13px] placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-blue-500/20 focus-visible:ring-offset-1 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-100 dark:placeholder-zinc-400 dark:focus-visible:ring-blue-500/20 dark:focus-visible:ring-offset-1 dark:focus-visible:ring-offset-zinc-700"
+              className="relative h-9 flex-grow rounded-full border border-gray-200 bg-white px-3 py-3 text-[15px] outline-none placeholder:text-[13px] placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-blue-500/20 focus-visible:ring-offset-1 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-100 dark:placeholder-zinc-400 dark:focus-visible:ring-blue-500/20 dark:focus-visible:ring-offset-1 dark:focus-visible:ring-offset-zinc-700"
               placeholder="Ask AI anything about your emails"
             />
             <motion.div

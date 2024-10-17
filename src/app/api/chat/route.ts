@@ -1,7 +1,15 @@
+import { google } from "@ai-sdk/google";
 import { auth } from "@clerk/nextjs/server";
-import { GoogleGenerativeAI, Part } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-import { Message, GoogleGenerativeAIStream, StreamingTextResponse } from "ai";
+import {
+  Message,
+  GoogleGenerativeAIStream,
+  StreamingTextResponse,
+  streamText,
+  LanguageModelV1,
+  StreamData,
+} from "ai";
 import { OramaManager } from "~/lib/orama";
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
@@ -13,7 +21,7 @@ export const POST = async (req: Request) => {
     if (!userId) return new Response("Unauthorized", { status: 401 });
 
     const orama = new OramaManager(accountId);
-    orama.initialize();
+    await orama.initialize();
 
     const lastMessage = messages[messages.length - 1];
     console.log("lastMessage: ", lastMessage);
@@ -45,63 +53,28 @@ export const POST = async (req: Request) => {
       model: "gemini-1.5-flash",
     });
 
-    // const parts: (string | Part)[] = [
-    //   {
-
-    //     text: prompt.content,
-    //   },
-    // ];
-
-    // interface Content {
-    //   role: string;
-    //   content: string;
-    //   parts: Part[];
-    // }
-
-    // const streamMessages: Content[] = [
-    //   {
-    //     role: "system",
-    //     parts: [prompt.content],
-    //   },
-    //   ...messages
-    //     .filter((message: Message) => message.role === "user")
-    //     .map((message: Message) => ({
-    //       role: message.role,
-    //       parts: [message.content],
-    //     })),
-    // ];
-
-    const response = await model.generateContent({
-      systemInstruction: prompt.content,
-      contents: [
+    const result = await streamText({
+      model: google("gemini-1.5-flash"),
+      messages: [
+        {
+          role: "system",
+          content: prompt.content,
+        },
         {
           role: "user",
-          parts: [
-            {
-              text: lastMessage.content,
-            },
-          ],
+          content: lastMessage.content,
         },
       ],
     });
-    // const stream = GoogleGenerativeAIStream(
-    //   //@ts-ignore
-    //   (await response.response)?.candidates?.[0]?.content.parts[0]?.text,
-    //   {
-    //     onStart: () => {
-    //       console.log("started");
-    //     },
-    //     onCompletion: () => {
-    //       console.log("Completed");
-    //     },
-    //   },
-    // );
-    const candidateText =
-      response?.response?.candidates?.[0]?.content?.parts[0]?.text ??
-      "No response";
-    console.log(candidateText);
 
-    return new Response(candidateText, { status: 200 });
+    // example: use textStream as an async iterable
+    for await (const textPart of result.textStream) {
+      console.log(textPart);
+    }
+
+    const data = new StreamData();
+    console.log(data);
+    return result.toDataStreamResponse({ data });
   } catch (error) {
     console.log(error);
     return new Response("Error", { status: 500 });

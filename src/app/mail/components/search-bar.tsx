@@ -19,25 +19,25 @@ const SearchBar = () => {
     setIsSearching(false);
   };
   // add escape key to close
-  React.useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        handleBlur();
-        ref.current?.blur();
-      }
-      if (
-        e.key === "/" &&
-        !["INPUT", "TEXTAREA", "SELECT"].includes(
-          document.activeElement?.tagName || "",
-        )
-      ) {
-        e.preventDefault();
-        ref.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
-  }, [setIsSearching, searchValue, isSearching, document.activeElement]);
+  //   React.useEffect(() => {
+  //     const handleEscape = (e: KeyboardEvent) => {
+  //       if (e.key === "Escape") {
+  //         handleBlur();
+  //         ref.current?.blur();
+  //       }
+  //       if (
+  //         e.key === "/" &&
+  //         !["INPUT", "TEXTAREA", "SELECT"].includes(
+  //           document.activeElement?.tagName || "",
+  //         )
+  //       ) {
+  //         e.preventDefault();
+  //         ref.current?.focus();
+  //       }
+  //     };
+  //     window.addEventListener("keydown", handleEscape);
+  //     return () => window.removeEventListener("keydown", handleEscape);
+  //   }, [setIsSearching, searchValue, isSearching, document.activeElement]);
 
   return (
     <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">

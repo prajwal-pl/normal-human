@@ -9,7 +9,21 @@ import {
 import { persist, restore } from "@orama/plugin-data-persistence";
 import { db } from "~/server/db";
 import { createEmbeddings } from "./embedding";
+import type { TypedDocument, Orama, Results, SearchParams } from "@orama/orama";
 // import { getEmbeddings } from "@/lib/embeddings";
+
+const searchSchema = {
+  title: "string",
+  body: "string",
+  rawBody: "string",
+  from: "string",
+  to: "string[]",
+  sentAt: "string",
+  embeddings: "vector[768]",
+  threadId: "string",
+} as const;
+
+type searchDocument = TypedDocument<Orama<typeof searchSchema>>;
 
 export class OramaManager {
   // @ts-ignore
@@ -41,16 +55,7 @@ export class OramaManager {
       } else {
         console.log("Creating new Orama instance");
         this.orama = await create({
-          schema: {
-            title: "string",
-            body: "string",
-            rawBody: "string",
-            from: "string",
-            to: "string[]",
-            sentAt: "string",
-            embeddings: "vector[768]",
-            threadId: "string",
-          },
+          schema: searchSchema,
         });
         await this.saveIndex();
         console.log("New Orama instance created successfully");
@@ -73,23 +78,36 @@ export class OramaManager {
     prompt: string;
     numResults?: number;
   }) {
-    const embeddings = await createEmbeddings(prompt);
-    const results = await search(this.orama, {
-      mode: "hybrid",
-      term: prompt,
-      vector: {
-        value: embeddings,
-        property: "embeddings",
-      },
-      similarity: 0.8,
-      limit: numResults,
-      hybridWeights: {
-        text: 0.8,
-        vector: 0.2,
-      },
-    });
-    // console.log(results.hits.map(hit => hit.document))
-    return results;
+    try {
+      const embeddings = await createEmbeddings(prompt);
+
+      if (!this.orama) throw new Error("Orama is not initialized");
+      if (!embeddings) throw new Error("No embeddings found");
+
+      const searchConfig: SearchParams<Orama<typeof searchSchema>> = {
+        mode: "hybrid",
+        term: prompt,
+        vector: {
+          value: embeddings,
+          property: "embeddings",
+        },
+        similarity: 0.8,
+        limit: numResults,
+        hybridWeights: {
+          text: 0.8,
+          vector: 0.2,
+        },
+      };
+      const results: Results<searchDocument> = await search(
+        this.orama,
+        searchConfig,
+      );
+      //   console.log(results.hits.map((hit) => hit.document));
+      return results;
+    } catch (error) {
+      console.error("Error in vectorSearch:", error);
+      throw error;
+    }
   }
   async search({ term }: { term: string }) {
     try {
