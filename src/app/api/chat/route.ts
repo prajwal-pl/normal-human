@@ -10,15 +10,42 @@ import {
   LanguageModelV1,
   StreamData,
 } from "ai";
+import { FREE_CREDITS_PER_DAY } from "~/app/constants";
 import { OramaManager } from "~/lib/orama";
+import { getSubscriptionStatus } from "~/lib/stripe-action";
+import { db } from "~/server/db";
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
+const today = new Date().toDateString();
 
 export const POST = async (req: Request) => {
   try {
     const { accountId, messages } = await req.json();
-    const userId = await auth();
+    const { userId } = await auth();
     if (!userId) return new Response("Unauthorized", { status: 401 });
+
+    const isSubscribed = await getSubscriptionStatus();
+    if (!isSubscribed) {
+      const chatbotInteraction = await db.chatbotInteraction.findUnique({
+        where: {
+          day: today,
+          userId,
+        },
+      });
+      if (!chatbotInteraction) {
+        await db.chatbotInteraction.create({
+          data: {
+            day: today,
+            userId,
+            count: 1,
+          },
+        });
+      } else if (chatbotInteraction.count >= FREE_CREDITS_PER_DAY) {
+        return new Response("Maximum number of credits reached for today", {
+          status: 429,
+        });
+      }
+    }
 
     const orama = new OramaManager(accountId);
     await orama.initialize();
@@ -70,8 +97,19 @@ export const POST = async (req: Request) => {
           ].join("\n"),
         },
       ],
-      onFinish: () => {
+      onFinish: async () => {
         data.close();
+        await db.chatbotInteraction.update({
+          where: {
+            day: today,
+            userId,
+          },
+          data: {
+            count: {
+              increment: 1,
+            },
+          },
+        });
       },
     });
 

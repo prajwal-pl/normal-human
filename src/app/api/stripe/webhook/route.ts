@@ -91,6 +91,14 @@ export async function POST(req: Request) {
     const subscription = await stripe.subscriptions.retrieve(
       session.id as string,
     );
+    const existingSUbscription = await db.stripeSubscription.findUnique({
+      where: {
+        subscriptionId: session.id as string,
+      },
+    });
+    if (!existingSUbscription) {
+      throw new Error("No subscription found for this subscription.");
+    }
     await db.stripeSubscription.update({
       where: {
         subscriptionId: session.id as string,

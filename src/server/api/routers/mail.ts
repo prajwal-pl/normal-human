@@ -5,6 +5,7 @@ import { z } from "zod";
 import { emailAddressSchema } from "~/lib/types";
 import { Account } from "~/lib/account";
 import { OramaManager } from "~/lib/orama";
+import { FREE_CREDITS_PER_DAY } from "~/app/constants";
 
 export const authoriseAccountAccess = async (
   accountId: string,
@@ -296,6 +297,29 @@ export const mailRouter = createTRPCRouter({
           id: lastExternalEmail.internetMessageId,
         };
       }
+    }),
+
+  getChatbotInteraction: privateProcedure
+    .input(
+      z.object({
+        accountId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const account = await authoriseAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+      const today = new Date().toDateString();
+      const chatbotInteraction = await db.chatbotInteraction.findUnique({
+        where: {
+          day: today,
+          userId: ctx.auth.userId,
+        },
+      });
+      const remainingCredits =
+        FREE_CREDITS_PER_DAY - (chatbotInteraction?.count || 0);
+      return { remainingCredits };
     }),
 
   getMyAccount: privateProcedure

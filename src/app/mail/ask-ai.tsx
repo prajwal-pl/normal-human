@@ -10,6 +10,7 @@ import { cn } from "~/lib/utils";
 // import StripeButton from './stripe-button';
 import { toast } from "sonner";
 import PremiumBanner from "./components/premium-banner";
+import { api } from "~/trpc/react";
 
 const transitionDebug = {
   type: "easeOut",
@@ -17,10 +18,14 @@ const transitionDebug = {
 };
 const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
   const [accountId] = useLocalStorage("accountId", "");
+  const utils = api.useUtils();
   const { input, handleInputChange, handleSubmit, messages } = useChat({
     api: "/api/chat",
     body: {
       accountId,
+    },
+    onFinish: () => {
+      utils.mail.getChatbotInteraction.refetch();
     },
     onError: (error) => {
       if (error.message.includes("Limit reached")) {

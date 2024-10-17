@@ -5,17 +5,23 @@ import { FREE_CREDITS_PER_DAY } from "~/app/constants";
 // import StripeButton from './stripe-button'
 import { api } from "~/trpc/react";
 import StripeButton from "./stripe-button";
+import { getSubscriptionStatus } from "~/lib/stripe-action";
+import useThreads from "../use-threads";
 // import { FREE_CREDITS_PER_DAY } from '@/app/constants'
 // import { getSubscriptionStatus } from '@/lib/stripe-actions'
 
 const PremiumBanner = () => {
   const [isSubscribed, setIsSubscribed] = React.useState(false);
-  // React.useEffect(() => {
-  //     (async () => {
-  //         const subscriptionStatus = await getSubscriptionStatus()
-  //         setIsSubscribed(subscriptionStatus)
-  //     })()
-  // }, [])
+  const { accountId } = useThreads();
+  const { data } = api.mail.getChatbotInteraction.useQuery({
+    accountId,
+  });
+  React.useEffect(() => {
+    (async () => {
+      const subscriptionStatus = await getSubscriptionStatus();
+      setIsSubscribed(subscriptionStatus);
+    })();
+  }, []);
 
   // const { data: chatbotInteraction } = api.mail.getChatbotInteraction.useQuery()
   // const remainingCredits = chatbotInteraction?.remainingCredits || 0
@@ -55,7 +61,7 @@ const PremiumBanner = () => {
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-semibold text-white">Basic Plan</h1>
           <p className="text-sm text-gray-400 md:max-w-[calc(100%-0px)]">
-            {} / {FREE_CREDITS_PER_DAY} messages remaining
+            {data?.remainingCredits} / {FREE_CREDITS_PER_DAY} messages remaining
           </p>
         </div>
         <div className="h-4"></div>
