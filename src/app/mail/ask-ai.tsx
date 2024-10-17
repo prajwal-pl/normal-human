@@ -28,12 +28,10 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
       utils.mail.getChatbotInteraction.refetch();
     },
     onError: (error) => {
-      if (error.message.includes("Limit reached")) {
-        toast.error(
-          "You have reached the limit for today. Please upgrade to pro to ask as many questions as you want",
-        );
-      }
+      console.log(error);
+      toast.error(error.message);
     },
+
     initialMessages: [],
   });
 
