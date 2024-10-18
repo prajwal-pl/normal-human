@@ -120,8 +120,8 @@ export const POST = async (req: Request) => {
 
     console.log(data);
     return result.toDataStreamResponse({ data });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
-    return new Response("Error", { status: 500 });
+    return new Response(error.message, { status: 500 });
   }
 };
