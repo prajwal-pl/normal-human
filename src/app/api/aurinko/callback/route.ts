@@ -19,6 +19,9 @@ export const GET = async (req: NextRequest) => {
     );
 
   const code = params.get("code");
+
+  if (!code)
+    return NextResponse.json({ error: "Missing code" }, { status: 400 });
   const token = await getAurinkoToken(code as string);
   if (!token)
     return NextResponse.json(
@@ -28,6 +31,14 @@ export const GET = async (req: NextRequest) => {
   const accountId = token.accountId.toString();
   console.log(accountId);
   const accountDetails = await getAccountDetails(token.accessToken);
+  const user = await db.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!user) {
+    return new Response("No user found", { status: 404 });
+  }
   await db.account.upsert({
     where: { id: token.accountId.toString() },
     create: {
